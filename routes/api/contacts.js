@@ -1,25 +1,29 @@
-const express = require("express");
+import { Router } from "express";
+import {
+  addCont,
+  getAllCont,
+  getContById,
+  removeCont,
+  updateCont,
+} from "../../controllers/contacts.js";
+import { controllerWrapper } from "../../middleware/controllerWrapper.js";
+import { reqValidation } from "../../middleware/reqValidation.js";
+import { addSchema, updateSchema } from "../../schemas/contact.js";
 
-const router = express.Router();
+const router = new Router();
 
-router.get("/", async (req, res, next) => {
-  res.json({ message: "template message" });
-});
+router.get("/", controllerWrapper(getAllCont));
 
-router.get("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
-});
+router.get("/:contactId", controllerWrapper(getContById));
 
-router.post("/", async (req, res, next) => {
-  res.json({ message: "template message" });
-});
+router.post("/", reqValidation(addSchema), controllerWrapper(addCont));
 
-router.delete("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
-});
+router.delete("/:contactId", controllerWrapper(removeCont));
 
-router.put("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
-});
+router.put(
+  "/:contactId",
+  reqValidation(updateSchema),
+  controllerWrapper(updateCont)
+);
 
-module.exports = router;
+export { router as contactsRouter };
